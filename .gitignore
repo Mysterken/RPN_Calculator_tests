@@ -1,0 +1,4 @@
+/app/vendor
+/app/coverages
+/app/.phpunit.cache
+/.idea
