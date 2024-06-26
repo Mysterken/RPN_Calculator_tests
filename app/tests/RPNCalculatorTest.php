@@ -4,6 +4,7 @@ require_once '/app/src/RPNCalculator.php';
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass('RPNCalculator')]
@@ -15,69 +16,92 @@ final class RPNCalculatorTest extends TestCase
      * @throws Exception
      */
     #[TestDox('Addition')]
-    public function testAddition()
+    #[TestWith(['2 3 +', 5])]
+    #[TestWith(['5 3 +', 8])]
+    #[TestWith(['2 3 4 + +', 9])]
+    public function testAddition(string $expression, int $expected)
     {
-        $result = $this->calculator->calculate('2 3 +');
-        $this->assertEquals(5, $result);
+        $this->calculate($expression, $expected);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function calculate(string $expression, int $expected): void
+    {
+        $result = $this->calculator->calculate($expression);
+        $this->assertEquals($expected, $result);
     }
 
     /**
      * @throws Exception
      */
     #[TestDox('Subtraction')]
-    public function testSubtraction()
+    #[TestWith(['5 3 -', 2])]
+    #[TestWith(['5 3 2 - -', 4])]
+    #[TestWith(['5 3 2 - +', 6])]
+    public function testSubtraction(string $expression, int $expected)
     {
-        $result = $this->calculator->calculate('5 3 -');
-        $this->assertEquals(2, $result);
+        $this->calculate($expression, $expected);
     }
 
     /**
      * @throws Exception
      */
     #[TestDox('Multiplication')]
-    public function testMultiplication()
+    #[TestWith(['2 3 *', 6])]
+    #[TestWith(['5 3 *', 15])]
+    #[TestWith(['5 3 2 * *', 30])]
+    public function testMultiplication(string $expression, int $expected)
     {
-        $result = $this->calculator->calculate('2 3 *');
-        $this->assertEquals(6, $result);
+        $this->calculate($expression, $expected);
     }
 
     /**
      * @throws Exception
      */
     #[TestDox('Division')]
-    public function testDivision()
+    #[TestWith(['6 3 /', 2])]
+    #[TestWith(['6 3 2 / /', 4])]
+    #[TestWith(['6 3 2 / *', 9])]
+    public function testDivision(string $expression, int $expected)
     {
-        $result = $this->calculator->calculate('6 3 /');
-        $this->assertEquals(2, $result);
+        $this->calculate($expression, $expected);
     }
 
     #[TestDox('Division by zero launches an exception')]
-    public function testDivisionByZero()
+    #[TestWith(['6 0 /'])]
+    #[TestWith(['6 0 2 / /'])]
+    public function testDivisionByZero(string $expression)
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Division by zero error');
 
-        $this->calculator->calculate('6 0 /');
+        $this->calculator->calculate($expression);
     }
 
     /**
      * @throws Exception
      */
     #[TestDox('Square root')]
-    public function testSquareRoot()
+    #[TestWith(['9 SQRT', 3])]
+    #[TestWith(['16 SQRT', 4])]
+    #[TestWith(['25 SQRT', 5])]
+    public function testSquareRoot(string $expression, int $expected)
     {
-        $result = $this->calculator->calculate('9 SQRT');
-        $this->assertEquals(3, $result);
+        $this->calculate($expression, $expected);
     }
 
     /**
      * @throws Exception
      */
     #[TestDox('Max')]
-    public function testMax()
+    #[TestWith(['2 3 MAX', 3])]
+    #[TestWith(['5 3 MAX', 5])]
+    #[TestWith(['5 3 2 MAX MAX', 5])]
+    public function testMax(string $expression, int $expected)
     {
-        $result = $this->calculator->calculate('2 3 MAX');
-        $this->assertEquals(3, $result);
+        $this->calculate($expression, $expected);
     }
 
     #[TestDox('Invalid RPN expression')]
@@ -108,20 +132,14 @@ final class RPNCalculatorTest extends TestCase
     }
 
     #[TestDox('Invalid operation')]
+    #[TestWith(['2 3 INVALID'])]
+    #[TestWith(['2 3 4 INVALID'])]
     public function testInvalidOperation()
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid operation');
 
         $this->calculator->calculate('2 3 INVALID');
-    }
-
-    public function testInvalidOperation2()
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Invalid operation');
-
-        $this->calculator->calculate('2 3 4 INVALID');
     }
 
     protected function setUp(): void
