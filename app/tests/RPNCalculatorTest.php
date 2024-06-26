@@ -105,41 +105,48 @@ final class RPNCalculatorTest extends TestCase
     }
 
     #[TestDox('Invalid RPN expression')]
-    public function testInvalidRPNExpression()
+    #[TestWith(['2 3'])]
+    #[TestWith(['2 3 4'])]
+    #[TestWith(['1 6 7 8'])]
+    public function testInvalidRPNExpression(string $expression)
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid RPN expression');
 
-        $this->calculator->calculate('2 3');
+        $this->calculator->calculate($expression);
     }
 
     #[TestDox('Not enough operands for operation +')]
-    public function testNotEnoughOperandsForOperation()
+    #[TestWith(['2 +'])]
+    #[TestWith(['2 3 + +'])]
+    public function testNotEnoughOperandsForOperation(string $expression)
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Not enough operands for operation +');
 
-        $this->calculator->calculate('2 +');
+        $this->calculator->calculate($expression);
     }
 
     #[TestDox('Not enough operands for operation MAX')]
-    public function testNotEnoughOperandsForOperationMAX()
+    #[TestWith(['MAX'])]
+    #[TestWith(['2 MAX'])]
+    public function testNotEnoughOperandsForOperationMAX(string $expression)
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Not enough operands for operation MAX');
 
-        $this->calculator->calculate('MAX');
+        $this->calculator->calculate($expression);
     }
 
     #[TestDox('Invalid operation')]
     #[TestWith(['2 3 INVALID'])]
     #[TestWith(['2 3 4 INVALID'])]
-    public function testInvalidOperation()
+    public function testInvalidOperation(string $expression)
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid operation');
 
-        $this->calculator->calculate('2 3 INVALID');
+        $this->calculator->calculate($expression);
     }
 
     protected function setUp(): void
