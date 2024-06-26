@@ -16,6 +16,7 @@ docker build -t <image-name> .
 
 ```bash
 docker run -it -p 8000:8000 -v ./app/:/app --name <container-name> <image-name>
+docker exec -it <container-name> /bin/bash
 ```
 
 ### Stop
@@ -34,3 +35,5 @@ While in the container, run:
 
 phpunit --colors --testdox --coverage-html ./coverages tests
 ```
+
+The coverages will be available in the `coverages` folder.
