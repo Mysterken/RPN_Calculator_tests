@@ -77,4 +77,49 @@ final class RPNCalculatorTest extends TestCase
         $this->calculator = new RPNCalculator();
     }
 
+    // test for calculate Invalid RPN expression
+    public function testInvalidRPNExpression()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Invalid RPN expression');
+
+        $this->calculator->calculate('2 3');
+    }
+
+    // test for calculate Not enough operands for operation
+    public function testNotEnoughOperandsForOperation()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Not enough operands for operation +');
+
+        $this->calculator->calculate('2 +');
+    }
+
+    // test for calculate Not enough operands for operation MAX
+    public function testNotEnoughOperandsForOperationMAX()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Not enough operands for operation MAX');
+
+        $this->calculator->calculate('MAX');
+    }
+
+    // test for calculate Invalid operation
+    public function testInvalidOperation()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Invalid operation');
+
+        $this->calculator->calculate('2 3 INVALID');
+    }
+
+    // test for calculate Invalid operation
+    public function testInvalidOperation2()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Invalid operation');
+
+        $this->calculator->calculate('2 3 4 INVALID');
+    }
+
 }
